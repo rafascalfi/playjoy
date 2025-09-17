@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sobre — Play Joy</title>
+  <meta name="description" content="Conheça a Play Joy, nossa missão, visão e valores." />
+  <style>
+    /* ====== Reset básico e tokens ====== */
+:root{
+  --bg:#fdfdc9;       /* fundo creme rosado */
+  --ink:#0f0e0e;      /* texto principal */
+  --muted:#0b223a;    /* texto secundário */
+  --brand:#0b223a;    /* rosa Play Joy */
+  --brand-2:#0b223a;  /* verde-água */
+  --accent:#ffe49e;   /* amarelo botão */
+  --sky:#ffffe9;      /* azul clarinho */
+  --card:#ffffff;     /* card */
+  --chip:#fff3f9;     /* chip */
+  --shadow:0 8px 24px rgba(0,0,0,.08);
+  --radius-xl:24px;
+  --radius-lg:18px;
+  --radius-md:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.4;
+}
+a{color:var(--brand-2);text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:1120px;margin:0 auto;padding:0 20px}
+.visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);clip-path:inset(50%);height:1px;width:1px;overflow:hidden;white-space:nowrap}
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{left:12px;top:12px;width:auto;height:auto;background:#000;color:#000000;padding:8px 12px;border-radius:10px;z-index:999}
+
+/* ====== Header ====== */
+header{
+  position:sticky;top:0;z-index:50;
+  background: #c69fd5 ;backdrop-filter:saturate(140%) blur(6px);
+  border-bottom:1px solid #ffd7ea;
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.brand{display:flex; align-items: center; gap: 12px}
+.brand{height:48px;width:auto}
+.logo {height:80px; width:auto; margin-left: 0;} /* logo reduzida */
+.brand h1{font-size:1.25rem;margin:0;color:var(--brand)}
+.navlinks{display:flex;gap:16px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:999px;padding:12px 20px;font-weight:bold;cursor:pointer;transition:transform .08s ease, filter .2s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:#000000}
+.btn-ghost{background:transparent;color:var(--brand-2)}
+
+/* ====== Content ====== */
+.content-section{background:var(--sky);padding:36px 0}
+.content-grid{max-width:800px;margin:0 auto;background:var(--card);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}
+.content-grid h2{margin-top:0;color:var(--brand-2)}
+.content-grid p{margin-bottom:16px;line-height:1.6}
+
+/* ====== Footer ====== */
+footer{background:#dacedf;margin-top:20px;border-top:1px solid #ffd7ea}
+.foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;padding:15px 0}
+.foot h4{margin:0 0 8px;color:var(--brand-2)}
+.foot a{display:block;margin:6px 0;color:#000000}
+.copyright{border-top:1px solid #ffd7ea;padding:14px 0;color:var(--muted);text-align:center}
+
+/* ====== Responsividade ====== */
+@media (max-width:900px){
+  .nav{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 0;
+    gap: 12px;
+  }
+  .navlinks{
+    flex-wrap: wrap;
+    gap:16px;
+    width:100%;
+    justify-content:flex-start;
+    font-size:1rem;
+  }
+  .btn{padding:12px 20px;font-size:0.95rem;}
+}
+
+@media (max-width:620px){
+  .content-grid{padding:16px}
+  .foot{grid-template-columns:1fr}
+}
+
+@media (max-width:500px){
+  .nav{
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo{height:50px;} /* logo bem menor em celulares */
+  .navlinks{
+    flex-direction: column;
+    align-items: center;
+    gap:12px;
+    font-size:0.95rem;
+  }
+  .btn{width:100%;text-align:center;}
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <!-- ====== Header ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Barra de navegação">
+      <div class="brand">
+      <img class="logo" src="Imagem/JOGO6_transparente.png" alt="Logo Play Joy"/>
+       </div>
+
+      <nav class="navlinks" aria-label="Links principais">
+        <a href="play_joy.html">Início</a>
+        <a href="support.html">Suporte</a>
+        <a href="#sobre">Sobre</a>
+
+        <span id="user-greeting" style="display:none;"></span>
+        <button class="btn btn-ghost" id="logout-btn" style="display:none;">Logout</button>
+        <button class="btn btn-primary" type="button" onclick="window.location.href='login_register.html'" id="login-register-btn">Login/Cadastro</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="content-section container" aria-labelledby="sobre">
+    <div class="content-grid">
+      <h2 id="sobre">Sobre a Play Joy</h2>
+      <p>A Play Joy é uma plataforma dedicada a oferecer jogos educacionais divertidos e seguros para crianças do Ensino Fundamental. Nosso objetivo é tornar o aprendizado uma experiência agradável e envolvente, combinando diversão com conteúdo pedagógico de qualidade.</p>
+      <p>Fundada em 2020, a Play Joy tem como missão apoiar o desenvolvimento educacional das crianças por meio de jogos interativos que estimulam o raciocínio, a criatividade e o conhecimento em diversas áreas do saber.</p>
+      <p>Nosso time é formado por educadores, desenvolvedores e designers comprometidos em criar um ambiente seguro e acolhedor para nossos usuários.</p>
+      <p>Estamos sempre abertos a sugestões e feedbacks para melhorar continuamente nossos serviços e oferecer a melhor experiência possível.</p>
+    </div>
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer role="contentinfo">
+    <div class="container foot">
+      <div>
+        <h4>Play Joy</h4>
+        <p class="muted">Aprender brincando é mais divertido.</p>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <a href="play_joy.html#jogos">Sobre</a>
+        <a href="play_joy.html#destaques">Suporte</a>
+        <a href="play_joy.html#pais">Contato</a>
+      </div>
+      <div>
+        
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacidade</a>
+        <a href="terms.html">Termos</a>
+      </div>
+    </div>
+    <div class="copyright">
+      © 2025 Play Joy — Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    // Check if user is logged in and display greeting
+    const userName = localStorage.getItem('userName');
+    const loginRegisterBtn = document.getElementById('login-register-btn');
+    if (userName) {
+      document.getElementById('user-greeting').textContent = `Olá, ${userName}!`;
+      document.getElementById('user-greeting').style.display = 'inline-block';
+      loginRegisterBtn.style.display = 'none'; // Hide login/cadastro button
+      document.getElementById('logout-btn').style.display = 'inline-block'; // Show logout button
+    }
+
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      localStorage.removeItem('userName'); // Clear user name from localStorage
+      document.getElementById('user-greeting').style.display = 'none'; // Hide greeting
+      loginRegisterBtn.style.display = 'inline-block'; // Show login/cadastro button
+      document.getElementById('logout-btn').style.display = 'none'; // Hide logout button
+    });
+  </script>
+</body>
+</html>

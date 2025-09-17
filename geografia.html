@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mundo da Geografia</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', sans-serif;
+      background: #f0faff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+    }
+    header {
+      background: #ffd1d5;
+      color: rgb(0, 0, 0);
+      padding: 16px;
+      font-size: 1.4rem;
+    }
+    .game-container {
+      max-width: 650px;
+      margin: 30px auto 80px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(255, 0, 0, 0.152);
+    }
+    .question { font-size: 1.2rem; margin-bottom: 20px; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    button { padding: 12px; font-size: 1rem; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+    button:hover { transform: scale(1.05); }
+    .correct { background: #4caf50; color: white; }
+    .wrong { background: #e53935; color: white; }
+    .next-btn, .restart-btn { margin-top: 20px; background: #0b223a; color: white; }
+    /* botão sair (fixo) */
+    .exit-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+      background: #fdfdc9;
+      color: rgb(0, 0, 0);
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+    .score { font-size: 1.3rem; margin-top: 20px; font-weight: bold; }
+    .level-btn { background: #fdfdc9; color: #0b223a; font-weight: bold; }
+    .hearts { font-size: 1.8rem; margin-bottom: 15px; }
+    .timer { font-size: 1.2rem; margin: 10px 0; font-weight: bold; color: #0b223a; }
+  </style>
+</head>
+<body>
+  <!-- Botão Sair que leva à página inicial -->
+  <a href="play_joy.html" class="exit-btn" aria-label="Sair para a página inicial">Sair</a>
+
+  <header>Mundo da Geografia</header>
+
+  <div class="game-container">
+    <div id="start">
+      <h2>Escolha o nível de dificuldade:</h2>
+      <button class="level-btn" onclick="startGame('facil')">Fácil</button>
+      <button class="level-btn" onclick="startGame('medio')">Médio</button>
+      <button class="level-btn" onclick="startGame('dificil')">Difícil</button>
+    </div>
+
+    <div id="quiz" style="display:none;">
+      <div class="hearts" id="hearts">❤️❤️❤️</div>
+      <div class="timer" id="timer">20s</div>
+      <p class="question" id="question"></p>
+      <div class="options" id="options"></div>
+      <button class="next-btn" id="nextBtn" style="display:none;">Próxima</button>
+    </div>
+
+    <p class="score" id="score"></p>
+  </div>
+
+  <script>
+    const questions = {
+      facil: [
+        { question: "Qual é a capital do Brasil?", options: ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"], answer: "Brasília" },
+        { question: "O Brasil está localizado em qual continente?", options: ["América do Sul", "África", "Ásia", "Europa"], answer: "América do Sul" },
+        { question: "Qual é a capital da Argentina?", options: ["Lima", "Buenos Aires", "Santiago", "Montevidéu"], answer: "Buenos Aires" },
+        { question: "Qual é a capital de Portugal?", options: ["Lisboa", "Madrid", "Paris", "Roma"], answer: "Lisboa" },
+        { question: "Qual é o maior país da América do Sul?", options: ["Argentina", "Chile", "Brasil", "Colômbia"], answer: "Brasil" },
+        { question: "Qual é o oceano que banha o litoral brasileiro?", options: ["Atlântico", "Pacífico", "Índico", "Ártico"], answer: "Atlântico" }
+      ],
+      medio: [
+        { question: "Qual é o maior país do mundo em território?", options: ["Canadá", "China", "Rússia", "EUA"], answer: "Rússia" },
+        { question: "Qual é o deserto mais seco do mundo?", options: ["Saara", "Kalahari", "Atacama", "Gobi"], answer: "Atacama" },
+        { question: "Qual é a capital da Austrália?", options: ["Sydney", "Melbourne", "Camberra", "Perth"], answer: "Camberra" },
+        { question: "Qual rio é considerado o mais extenso do mundo?", options: ["Amazonas", "Nilo", "Yangtzé", "Mississipi"], answer: "Nilo" },
+        { question: "Qual é o país mais populoso do mundo?", options: ["Índia", "EUA", "China", "Rússia"], answer: "China" }
+      ],
+      dificil: [
+        { question: "Qual cadeia de montanhas separa a Europa da Ásia?", options: ["Andes", "Urais", "Alpes", "Himalaias"], answer: "Urais" },
+        { question: "Qual é a capital da Nova Zelândia?", options: ["Sydney", "Auckland", "Wellington", "Christchurch"], answer: "Wellington" },
+        { question: "Qual deserto fica na China e Mongólia?", options: ["Saara", "Atacama", "Gobi", "Kalahari"], answer: "Gobi" },
+        { question: "Qual país é atravessado pela Linha do Equador e pelo Trópico de Capricórnio?", options: ["Brasil", "Colômbia", "Equador", "Peru"], answer: "Brasil" },
+        { question: "Qual é a capital da Islândia?", options: ["Reykjavik", "Oslo", "Helsinque", "Estocolmo"], answer: "Reykjavik" }
+      ]
+    };
+
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+    let timeLeft;
+    let timerInterval;
+    let levelTime = 20;
+
+    const startDiv = document.getElementById("start");
+    const quizDiv = document.getElementById("quiz");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("nextBtn");
+    const scoreEl = document.getElementById("score");
+    const heartsEl = document.getElementById("hearts");
+    const timerEl = document.getElementById("timer");
+
+    function startGame(level) {
+      currentQuestions = questions[level];
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+
+      if (level === "facil") levelTime = 25;
+      if (level === "medio") levelTime = 20;
+      if (level === "dificil") levelTime = 15;
+
+      startDiv.style.display = "none";
+      quizDiv.style.display = "block";
+      scoreEl.textContent = "";
+      updateHearts();
+      loadQuestion();
+    }
+
+    function updateHearts() {
+      heartsEl.textContent = "❤️".repeat(lives) + "🤍".repeat(3 - lives);
+    }
+
+    function loadQuestion() {
+      clearInterval(timerInterval);
+      timeLeft = levelTime;
+      timerEl.textContent = ` ${timeLeft}s`;
+      timerInterval = setInterval(updateTimer, 1000);
+
+      let q = currentQuestions[currentQuestionIndex];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(btn, q.answer);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      timerEl.textContent = ` ${timeLeft}s`;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        lives--;
+        updateHearts();
+        if (lives <= 0) {
+          endGame(true);
+          return;
+        }
+        nextBtn.style.display = "block";
+      }
+    }
+
+    function checkAnswer(btn, correct) {
+      clearInterval(timerInterval);
+      if (btn.textContent === correct) {
+        score++;
+        scoreEl.textContent = "Pontuação: " + score;
+        btn.classList.add('correct');
+      } else {
+        lives--;
+        updateHearts();
+        btn.classList.add('wrong');
+      }
+      if (currentQuestionIndex < currentQuestions.length - 1) {
+        nextBtn.style.display = "block";
+      } else {
+        endGame(false);
+      }
+    }
+
+    function nextQuestion() {
+      nextBtn.style.display = "none";
+      currentQuestionIndex++;
+      loadQuestion();
+    }
+
+    function endGame(isTimeOut) {
+      clearInterval(timerInterval);
+      quizDiv.style.display = "none";
+      if (isTimeOut || lives <= 0) {
+        scoreEl.textContent = "Fim de jogo! Sua pontuação: " + score;
+      } else {
+        scoreEl.textContent = "Parabéns! Sua pontuação: " + score;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Play Joy — Jogos Educacionais</title>
+  <meta name="description" content="Jogos educacionais divertidos e seguros para crianças." />
+  <style>
+    :root{
+      --bg:#fdfdc9;
+      --ink:#0f0e0e;
+      --muted:#0b223a;
+      --brand:#0b223a;
+      --brand-2:#0b223a;
+      --accent:#ffe49e;
+      --sky:#000000;
+      --card:#ffffff;
+      --chip:#fff3f9;
+      --shadow:0 10px 30px rgba(11,34,58,.08);
+      --radius-xl:20px;
+      --radius-lg:14px;
+      --radius-md:10px;
+      --glass: rgba(255,255,255,0.6);
+      --max-width:1120px;
+      --gap:20px;
+    }
+
+    /* Reset */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial; color:var(--ink); background:var(--bg); -webkit-font-smoothing:antialiased}
+    img{display:block;max-width:100%;height:auto}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:var(--max-width);margin:0 auto;padding:0 20px}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:60;background:linear-gradient(180deg,#c69fd5 0%, #c69fd5 100%);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,215,234,0.6)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{height:62px;width:auto}
+    .brand h1{font-size:1.1rem;margin:0;color:var(--brand)}
+    nav.navlinks{display:flex;align-items:center;gap:12px}
+    .navlinks a{padding:8px 10px;border-radius:12px;font-weight:600;color:var(--muted);opacity:.95}
+    .navlinks a:hover{background:var(--chip)}
+    .actions{display:flex;gap:10px;align-items:center}
+    .btn{border:none;border-radius:14px;padding:10px 14px;font-weight:700;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+    .btn-primary{background:var(--accent);color:#000;box-shadow:var(--shadow)}
+    .btn-ghost{background:transparent;color:var(--brand-2);padding:8px 12px}
+
+    /* Hero */
+    .hero{padding:28px 0}
+    .hero-wrap{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    .eyebrow{display:inline-block;background:var(--chip);padding:6px 10px;border-radius:999px;font-weight:700;color:var(--brand-2);font-size:.9rem}
+    .hero h2{font-size:2.25rem;margin:12px 0 10px;color:var(--brand);line-height:1.05}
+    .hero p{color:var(--muted);margin:0 0 18px}
+    .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-img{border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+
+    /* Filters */
+    .section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+    .section-header h2{margin:0;color:var(--brand)}
+    .filters{display:flex;flex-wrap:wrap;gap:12px}
+    .chip{background:var(--chip);border:2px solid transparent;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;transition:all .18s ease}
+    .chip:hover{transform:translateY(-4px)}
+    .chip[aria-pressed="true"]{background:var(--brand-2);color:#fff;border-color:rgba(11,34,58,.08);box-shadow:0 8px 18px rgba(11,34,58,.06)}
+
+    /* Games grid */
+    .games{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+    .game{background:var(--card);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .18s ease, box-shadow .18s}
+    .game:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(11,34,58,.12)}
+    .game-media{height:170px;overflow:hidden}
+    .game-media img{width:100%;height:100%;object-fit:cover}
+    .game-body{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}
+    .game-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .game-top h3{margin:0;font-size:1.1rem;color:var(--brand-2)}
+    .badge{background:#abd1c6;color:#0b223a;border-radius:999px;padding:6px 10px;font-weight:700;font-size:.85rem}
+    .meta{color:var(--muted);font-size:.9rem;display:flex;gap:10px;align-items:center}
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{background:#f1fbf8;border-radius:999px;padding:6px 10px;border:1px solid #c8f4ea;font-size:.85rem}
+    .game-actions{display:flex;gap:10px;padding:14px;border-top:1px solid #f0eef5;align-items:center;justify-content:space-between}
+    .game-actions .group{display:flex;gap:8px;align-items:center}
+
+    /* Empty state */
+    .empty{padding:40px;background:linear-gradient(180deg,#fff,#fff);border-radius:16px;border:1px dashed #ffd7ea;color:var(--muted);text-align:center}
+
+    /* Interativo (jogo ligar palavras) */
+    .game-section{background:var(--sky);padding:28px;border-radius:var(--radius-xl);margin:28px 0;box-shadow:var(--shadow)}
+    .game-container{background:var(--card);padding:16px;border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+    .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+    .columns{display:flex;gap:12px;align-items:flex-start}
+    .column{flex:1;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .column .word{background:var(--accent);padding:14px 18px;border-radius:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 12px rgba(0,0,0,.06);min-width:120px;text-align:center}
+    .column-pt .word-pt img{border-radius:12px}
+    .correct{background:#a8e6cf!important;border:3px solid #3fb67c}
+    .wrong{background:#ff8b8b!important;color:#fff;animation:shake .35s}
+    @keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
+
+    /* Careers */
+    .careers-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:12px}
+    .careers-card{background:var(--card);padding:18px;border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+    .job-listing{margin-top:14px}
+
+    /* Newsletter & footer */
+    .newsletter{background:#c69fd5;border-radius:18px;padding:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow)}
+    .input{padding:12px 14px;border-radius:12px;border:2px solid #ffd389;min-width:220px}
+    footer{margin-top:28px;background:#dacedf;padding:18px;border-top:1px solid #ffd7ea}
+    .foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;align-items:start}
+
+    /* Responsive */
+    @media (max-width:1000px){ .hero-wrap{grid-template-columns:1fr 340px} .games{grid-template-columns:repeat(2,1fr)} .careers-grid{grid-template-columns:1fr} }
+    @media (max-width:680px){ .hero-wrap{grid-template-columns:1fr} .games{grid-template-columns:1fr} .nav{padding:12px 0} .navlinks{display:none} .actions .mobile-show{display:inline-flex} }
+    @media (max-width:420px){ .logo{height:52px} .hero h2{font-size:1.5rem} .game-media{height:150px} }
+  </style>
+</head>
+<body>
+  
+
+  <!-- Header -->
+  <header role="banner">
+    <div class="container nav" aria-label="Barra de navegação">
+      <div class="brand">
+        <img class="logo" src="Imagem/JOGO6_transparente.png" alt="Logo Play Joy" />
+        <div>
+          
+        </div>
+      </div>
+
+      <nav class="navlinks" aria-label="Navegação principal">
+      
+      </nav>
+
+      <div class="actions">
+        <div id="user-greeting" style="font-weight:700;display:none"></div>
+        <button class="btn btn-ghost" id="logout-btn" style="display:none">Logout</button>
+       <a href="login_register.html">
+  <button class="btn btn-primary">Login / Cadastro</button>
+</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero" aria-labelledby="titulo-hero">
+      <div class="hero-wrap">
+        <div>
+          <span class="eyebrow">Segurança · Diversão · Aprendizado</span>
+          <h2 id="titulo-hero">Com Play Joy, aprender nunca foi tão divertido!</h2>
+          <p>Pequenas aventuras, grandes conquistas — descubra, brinque, aprenda.</p>
+          <div class="hero-cta" role="group" aria-label="Ações principais">
+           
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+           
+          </div>
+        </div>
+
+        <div class="hero-image hero-img" aria-hidden="true">
+          <img src="Imagem/Capa1.png" alt="Imagem ilustrativa PlayJoy" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section id="conteudo" class="section" aria-labelledby="jogos">
+      <div class="section-header">
+        <h2 id="jogos">Categorias</h2>
+        <div style="display:flex;gap:12px;align-items:center">
+          
+          </select>
+        </div>
+      </div>
+
+      <div class="filters" role="toolbar" aria-label="Filtros de categorias">
+        <button class="chip" data-filter="tudo" aria-pressed="true">Tudo</button>
+      
+        <button class="chip" data-filter="portugues">Português</button>
+       
+        <button class="chip" data-filter="geografia">Geografia</button>
+        <button class="chip" data-filter="historia">História</button>
+        <button class="chip" data-filter="ingles">Inglês</button>
+        
+      </div>
+
+      <!-- Games grid -->
+      <section id="grid-jogos" class="games" aria-live="polite" style="margin-top:18px">
+        <!-- Cards serão gerados/atualizados via JS (uso das mesmas imagens existentes) -->
+      </section>
+
+      <div id="empty-state" class="empty" style="display:none;margin-top:18px">
+        Nenhum jogo encontrado com esse filtro. Tente outro filtro ou busque por palavra-chave.
+      </div>
+    </section>
+
+    <!-- Jogo Interativo -->
+    
+        <div class="columns" id="game-columns" style="margin-top:8px">
+          <div class="column column-en" id="col-en" aria-label="Palavras em inglês"></div>
+          <div class="column column-pt" id="col-pt" aria-label="Imagens correspondentes"></div>
+        </div>
+      </div>
+
+      <!-- Overlay -->
+      <div id="overlay" class="overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;align-items:center;justify-content:center">
+        <div style="background:#fff;padding:28px;border-radius:16px;max-width:420px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.2)">
+          <h2 id="overlay-text"></h2>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" id="overlay-btn"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+   
+
+    <!-- Newsletter -->
+   
+        <form id="form-news" style="display:flex;gap:10px;align-items:center" onsubmit="return false;">
+          
+          
+        </form>
+        <div id="nl-msg" style="width:100%;text-align:center"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="container foot">
+      <div>
+        <h4>Play Joy</h4>
+        <p>Aprender brincando é mais divertido.</p>
+      </div>
+      
+      <div>
+        <h4>Empresa</h4>
+        <a href="about.html">Sobre</a>
+        <br>
+        <a href="support.html">Suporte</a>
+        <br>
+        <a href="contact.html">Contato</a>
+        
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacidade</a>
+        <br>
+        <a href="terms.html">Termos</a>
+      </div>
+    </div>
+    <div style="text-align:center;padding:12px;color:var(--muted);border-top:1px solid #ffd7ea">© 2025 Play Joy — Todos os direitos reservados.</div>
+  </footer>
+
+  <script>
+    /* ========== Dados iniciais dos jogos (mesmos do arquivo original) ========== */
+    const GAMES = [
+      
+      { id: 'g2', title:'Palavras Mágicas', grade:'3º–5º ano', tags:['portugues','3-5'], desc:'Vocabulário, ortografia e sinônimos com desafios progressivos e dicas sonoras.', img:'Imagem/JOGO2.png', time:'8–12 min', diff:'★★★☆☆', href:'Jogo/palavras.html' },
+      { id: 'g4', title:'Inglês Divertido', grade:'1º–2º ano', tags:['ingles','1-2'], desc:'Vocabulário básico com imagens, narração e jogos de memória.', img:'Imagem/JOGO4.png', time:'6–10 min', diff:'★☆☆☆☆', href:'Jogo/ingles.html' },
+      { id: 'g5', title:'Mundo da Geografia', grade:'3º–5º ano', tags:['geografia','3-5'], desc:'Mapa-múndi, capitais e curiosidades com desafios por tempo.', img:'Imagem/JOGO5.png', time:'10–14 min', diff:'★★★☆☆', href:'geografia.html' },
+      { id: 'g6', title:'História em Ação', grade:'3º–5º ano', tags:['historia','3-5'], desc:'Linha do tempo interativa com eventos marcantes do Brasil e do mundo.', img:'Imagem/JOGO6.png', time:'8–12 min', diff:'★★☆☆☆', href:'historia.html' },
+      { id: 'g8', title:'Aventuras em Português', grade:'1º–2º ano', tags:['portugues','1-2'], desc:'Leitura guiada, compreensão de texto e formação de frases.', img:'Imagem/JOGO8.png', time:'7–10 min', diff:'★★☆☆☆', href:'portugues.html' }
+
+    ];
+
+    /* ---------- Utilitários DOM ---------- */
+    const grid = document.getElementById('grid-jogos');
+    const chips = [...document.querySelectorAll('.chip')];
+    const searchInput = document.getElementById('search');
+    const sortSelect = document.getElementById('sort');
+    const emptyState = document.getElementById('empty-state');
+
+    /* Favoritos/localStorage */
+    const FAVORITES_KEY = 'playjoy_favs';
+    function getFavorites(){ try { return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]'); } catch(e){ return [] } }
+    function saveFavorites(arr){ localStorage.setItem(FAVORITES_KEY, JSON.stringify(arr)); }
+
+    function renderGames(list){
+      grid.innerHTML = '';
+      if(!list.length){ emptyState.style.display = 'block'; return; } else emptyState.style.display = 'none';
+      list.forEach(game=>{
+        const article = document.createElement('article');
+        article.className = 'game';
+        article.setAttribute('data-tags', game.tags.join(' '));
+        article.innerHTML = `
+          <div class="game-media"><img src="${game.img}" alt="${game.title}"></div>
+          <div class="game-body">
+            <div class="game-top">
+              <h3>${game.title}</h3>
+              <span class="badge">${game.grade}</span>
+            </div>
+            <p style="margin:0;color:var(--muted)">${game.desc}</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+              <div class="meta"><span class="stars" aria-hidden="true">${game.diff}</span> • <span>${game.time}</span></div>
+              <div class="tags" aria-hidden="true">${game.tags.map(t=>`<span class="tag">${t[0].toUpperCase()+t.slice(1)}</span>`).join('')}</div>
+            </div>
+          </div>
+          <div class="game-actions">
+            <div class="group">
+              <a class="btn btn-primary" href="${game.href}" aria-label="Jogar ${game.title}">Jogar</a>
+            </div>
+            <div class="group">
+              <button class="btn btn-ghost fav-btn" data-id="${game.id}" aria-pressed="false"></button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(article);
+      });
+
+      // marcar favoritos
+      const favs = getFavorites();
+      document.querySelectorAll('.fav-btn').forEach(btn=>{
+        const id = btn.dataset.id;
+        if(favs.includes(id)){ btn.setAttribute('aria-pressed','true'); btn.textContent = '' }
+        btn.addEventListener('click', ()=>{
+          let favs = getFavorites();
+          if(favs.includes(id)){ favs = favs.filter(x=>x!==id); btn.setAttribute('aria-pressed','false'); btn.textContent = '' }
+          else { favs.push(id); btn.setAttribute('aria-pressed','true'); btn.textContent = '' }
+          saveFavorites(favs);
+        });
+      });
+    }
+
+    // inicial render
+    renderGames(GAMES);
+
+    /* ========== Filtros e busca ========== */
+    function applyFilter(filter){
+      chips.forEach(c=>c.setAttribute('aria-pressed','false'));
+      const btn = chips.find(c=>c.dataset.filter===filter);
+      if(btn) btn.setAttribute('aria-pressed','true');
+
+      const q = (searchInput.value || '').trim().toLowerCase();
+      let list = GAMES.filter(g=>{
+        const hasTag = filter === 'tudo' ? true : g.tags.includes(filter);
+        const matchesSearch = q ? (g.title.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.tags.join(' ').includes(q)) : true;
+        return hasTag && matchesSearch;
+      });
+
+      if(sortSelect.value === 'duration'){
+        list = list.slice().sort((a,b)=>{
+          // tentativa simples: converter "6–10 min" etc em média
+          function avgTime(t){
+            const m = t.match(/(\d+)[^\d]+(\d+)/);
+            if(m) return (parseInt(m[1])+parseInt(m[2]))/2;
+            const s = t.match(/(\d+)/);
+            return s?parseInt(s[1]):0;
+          }
+          return avgTime(a.time) - avgTime(b.time);
+        });
+      }
+
+      renderGames(list);
+    }
+
+    chips.forEach(c=>{
+      c.addEventListener('click', ()=> applyFilter(c.dataset.filter));
+    });
+
+    searchInput.addEventListener('input', ()=> applyFilter(document.querySelector('.chip[aria-pressed="true"]').dataset.filter));
+    sortSelect.addEventListener('change', ()=> applyFilter(document.querySelector('.chip[aria-pressed="true"]').dataset.filter));
+
+    /* ========== Newsletter ========== */
+    const form = document.getElementById('form-news');
+    const email = document.getElementById('email');
+    const msg = document.getElementById('nl-msg');
+    document.getElementById('newsletter-btn').addEventListener('click', ()=>{
+      if(!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){ msg.textContent='Digite um e-mail válido.'; msg.style.color='#b00020'; return; }
+      msg.textContent='Obrigada! Você está na lista!';
+      msg.style.color='#147d6f';
+      email.value='';
+    });
+
+    /* ========== Login / Logout (simples com localStorage) ========== */
+    const loginRegisterBtn = document.getElementById('login-register-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userGreeting = document.getElementById('user-greeting');
+
+    function showUser(name){
+      userGreeting.textContent = `Olá, ${name}!`;
+      userGreeting.style.display = 'block';
+      logoutBtn.style.display = 'inline-flex';
+      loginRegisterBtn.style.display = 'none';
+    }
+    function hideUser(){
+      userGreeting.style.display = 'none';
+      logoutBtn.style.display = 'none';
+      loginRegisterBtn.style.display = 'inline-flex';
+    }
+
+    const stored = localStorage.getItem('userName');
+    if(stored){ showUser(stored) } else { hideUser() }
+
+    loginRegisterBtn.addEventListener('click', ()=>{
+      const name = prompt('Digite seu nome (simulação de login):');
+      if(name){ localStorage.setItem('userName', name); showUser(name); }
+    });
+    logoutBtn.addEventListener('click', ()=>{ localStorage.removeItem('userName'); hideUser(); });
+
+    /* ========== Jobs toggles ========== */
+    function toggleJob(el){ const details = el.nextElementSibling; if(!details) return; details.style.display = details.style.display==='block' ? 'none' : 'block'; }
+    function applyForJob(position){ alert(`Obrigado pelo interesse na posição de ${position}! Redirecionando... (simulação)`); }
+
+    /* ========== Jogo Interativo (mantive a lógica original, melhorando alguns nomes) ========== */
+    let selectedEn = null;
+    let soundOn = true;
+    let lives = 3;
+    let faseAtual = 1;
+
+    const fases = {
+      1: {
+        en: [
+          { palavra: "Bicycle", par: "Bicicleta" },
+          { palavra: "Cat", par: "gato" },
+          { palavra: "Cherry", par: "maçã" },
+          { palavra: "Watermelon", par: "cachorro" },
+          { palavra: "Book", par: "livro" }
+        ],
+        pt: [
+          { par: "livro", img: "Imagem/livro.jpg", w: 60 },
+          { par: "maçã", img: "Imagem/cereja.jpg", w: 80 },
+          { par: "cachorro", img: "Imagem/melancia.jpg", w: 70 },
+          { par: "gato", img: "Imagem/gato.jpg", w: 80 },
+          { par: "Bicicleta", img: "Imagem/bicicleta.jpg", w: 100 }
+        ]
+      },
+      2: {
+        en: [
+          { palavra: "Bear", par: "peixe"},
+          { palavra: "Pig", par: "carro" },
+          { palavra: "Monkey", par: "casa" },
+          { palavra: "Tiger", par: "sol" },
+          { palavra: "Cow", par: "árvore" },
+        ],
+        pt: [
+          { par: "casa", img: "Imagem/macaco.jpg", w: 80 },
+          { par: "carro", img: "Imagem/porco.jpg", w: 80 },
+          { par: "sol", img: "Imagem/tigre.jpg", w: 80 },
+          { par: "árvore", img: "Imagem/vaca.jpg", w: 80 },
+          { par: "peixe", img: "Imagem/urso.jpg", w: 80 },
+        ]
+      }
+    };
+
+    function updateLives(){
+      const el = document.getElementById('lives'); el.innerHTML='';
+      for(let i=0;i<lives;i++) el.innerHTML += '<span>❤️</span>';
+      for(let i=lives;i<3;i++) el.innerHTML += '<span>🤍</span>';
+    }
+
+    function loseLife(){
+      lives--;
+      updateLives();
+      if(lives<=0){
+        showOverlay('Você perdeu todas as vidas! Tente novamente.', false);
+        lives=3;
+        updateLives();
+      }
+    }
+
+    function checkWin(){
+      const allCorrect = [...document.querySelectorAll('#col-en .word')].every(w => w.classList.contains('correct'));
+      if(allCorrect) showOverlay('Parabéns! Você acertou tudo!', true);
+    }
+
+    function showOverlay(text, win=false){
+      const overlay = document.getElementById('overlay');
+      const overlayText = document.getElementById('overlay-text');
+      const overlayBtn = document.getElementById('overlay-btn');
+
+      overlayText.textContent = text;
+      overlay.style.display = 'flex';
+      if(win){
+        overlayBtn.textContent = 'Próxima Fase';
+        overlayBtn.onclick = () => {
+          faseAtual++;
+          if(fases[faseAtual]){ overlay.style.display='none'; carregarFase(faseAtual); }
+          else {
+            overlayText.textContent = 'Você terminou todas as fases!';
+            overlayBtn.textContent = 'Jogar Novamente';
+            overlayBtn.onclick = ()=>{ location.reload(); };
+          }
+        };
+      } else {
+        overlayBtn.textContent = 'Tentar Novamente';
+        overlayBtn.onclick = ()=>{ location.reload(); };
+      }
+    }
+
+    function carregarFase(num){
+      document.getElementById('fase-num').textContent = num;
+      const colEn = document.getElementById('col-en');
+      const colPt = document.getElementById('col-pt');
+      colEn.innerHTML=''; colPt.innerHTML='';
+      fases[num].en.forEach(item=>{
+        const div = document.createElement('div');
+        div.className='word';
+        div.dataset.pair = item.par;
+        div.textContent = item.palavra;
+        div.tabIndex = 0;
+        div.addEventListener('click', ()=> selectEn(div));
+        div.addEventListener('keydown', (e)=>{ if(e.key==='Enter') selectEn(div) });
+        colEn.appendChild(div);
+      });
+      // embaralhar pt para evitar alinhamento óbvio
+      const shuffled = fases[num].pt.slice().sort(()=>Math.random()-0.5);
+      shuffled.forEach(item=>{
+        const div = document.createElement('div');
+        div.className='word-pt';
+        div.dataset.pair = item.par;
+        div.innerHTML = `<img src="${item.img}" width="${item.w}" alt="${item.par}">`;
+        div.tabIndex = 0;
+        div.addEventListener('click', ()=> selectPt(div));
+        div.addEventListener('keydown', (e)=>{ if(e.key==='Enter') selectPt(div) });
+        colPt.appendChild(div);
+      });
+      selectedEn = null;
+      updateLives();
+    }
+
+    function selectEn(word){
+      if(word.classList.contains('correct')) return;
+      document.querySelectorAll('#col-en .word').forEach(w=>w.classList.remove('selected'));
+      word.classList.add('selected');
+      selectedEn = word;
+      if(soundOn) speakWord(word.textContent.trim());
+    }
+
+    function selectPt(word){
+      if(!selectedEn || word.classList.contains('correct-pt')) return;
+      if(selectedEn.dataset.pair === word.dataset.pair){
+        selectedEn.classList.add('correct');
+        word.classList.add('correct-pt');
+        selectedEn.classList.remove('selected');
+        selectedEn = null;
+        checkWin();
+      } else {
+        word.classList.add('wrong-pt');
+        selectedEn.classList.add('wrong');
+        loseLife();
+        setTimeout(()=>{ word.classList.remove('wrong-pt'); selectedEn.classList.remove('wrong'); selectedEn.classList.remove('selected'); selectedEn=null; }, 900);
+      }
+    }
+
+    function speakWord(word){
+      if(!('speechSynthesis' in window)) return;
+      const u = new SpeechSynthesisUtterance(word);
+      u.lang = 'en-US';
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }
+
+    document.getElementById('soundBtn').addEventListener('click', ()=>{ soundOn = !soundOn; document.getElementById('soundBtn').textContent = soundOn? 'Som' : 'Sem Som'; });
+
+    carregarFase(faseAtual);
+
+    /* ========== Inicialização UI por segurança ========== */
+    // Garantir que "Tudo" esteja aplicado no começo
+    applyFilter('tudo');
+  </script>
+</body>
+</html>

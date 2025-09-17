@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Palavras Mágicas</title>
+  <meta name="description" content="Palavras Mágicas" />
+
+  <style>
+    :root{
+      --bg:#fdfdc9;
+      --ink:#0f0e0e;
+      --muted:#0b223a;
+      --brand:#0b223a;
+      --brand-2:#0b223a;
+      --accent:#ffe49e;
+      --sky:#ffffe9;
+      --card:#ffffff;
+      --chip:#fff3f9;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius-xl:24px;
+      --radius-lg:18px;
+      --radius-md:14px;
+      --max-width:820px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Segoe UI', Tahoma, Verdana, sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    .wrap{width:100%;max-width:var(--max-width);}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:22px;
+      display:grid;
+      gap:18px;
+    }
+    .header-min{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .logo-mini{height:56px;width:56px;border-radius:12px;background:linear-gradient(180deg,var(--sky),var(--chip));display:flex;align-items:center;justify-content:center;font-weight:bold;color:var(--brand-2)}
+    h1{font-size:1.35rem;margin:0;color:var(--brand)}
+    p.lead{margin:0;color:var(--muted);font-size:0.98rem}
+
+    .play{background:var(--sky);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center}
+    .image-hint{max-width:220px;max-height:160px;object-fit:contain;border-radius:16px;box-shadow:var(--shadow);background:#fff}
+    .word-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .blank{
+      width:48px;height:56px;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;color:var(--brand-2);
+      border:2px dashed rgba(11,34,58,.05);cursor:pointer;user-select:none;
+    }
+    .blank.filled{border-style:solid;background:linear-gradient(180deg,#fff,#f7f7f7)}
+    .letters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding-top:6px}
+    .letter-btn{
+      min-width:44px;height:44px;border-radius:12px;border:0;background:var(--chip);font-weight:800;font-size:1.05rem;cursor:pointer;box-shadow:0 6px 18px rgba(11,34,58,.04);
+    }
+    .letter-btn[disabled]{opacity:.38;cursor:default}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+    .btn{border:0;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(11,34,58,.06)}
+    .btn-primary{background:var(--accent);color:#000}
+    .btn-ghost{background:transparent;color:var(--brand-2);border:1px solid rgba(11,34,58,.06)}
+
+    .feedback{min-height:34px;text-align:center;font-weight:700;border-radius:12px;padding:6px 10px}
+    .ok{color:#0b6b3a;background:rgba(20,125,111,.08);border:1px solid rgba(20,125,111,.08)}
+    .no{color:#b00020;background:rgba(176,0,32,.06);border:1px solid rgba(176,0,32,.06)}
+
+    .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-weight:700;font-size:0.95rem}
+    .hearts{display:flex;gap:6px;align-items:center}
+    .heart{font-size:1.05rem}
+    .small-muted{font-size:0.88rem;color:var(--muted);font-weight:600}
+    .confetti{pointer-events:none;position:fixed;inset:0;z-index:9999}
+
+    @media (max-width:480px){
+      .logo-mini{height:46px;width:46px}
+      h1{font-size:1.05rem}
+      .blank{width:40px;height:48px}
+      .letter-btn{min-width:40px;height:40px}
+      .image-hint{max-width:180px;max-height:130px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header-min">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="logo-mini">PJ</div>
+          <div>
+            <h1 id="titulo">Palavras Mágicas</h1>
+            <p class="lead">Clique nas letras e forme a palavra correspondente a imagem! </p>
+          </div>
+        </div>
+        <div class="small-muted" id="roundInfo">Rodada 1 / 10</div>
+      </div>
+
+      <div class="play">
+        <img id="imgHint" class="image-hint" src="Imagens JG2/gato.png" alt="Imagem dica"/>
+        <div class="word-row" id="blanks"></div>
+        <div class="letters" id="letters"></div>
+
+        <div class="controls">
+  <button id="backspace" class="btn btn-ghost">⟲ Apagar</button>
+  <button id="skip" class="btn btn-ghost">⏭ Pular</button>
+  <button onclick="window.location.href='../play_joy.html'" class="btn btn-primary">Sair</button>
+</div>
+
+
+        <div id="feedback" class="feedback"></div>
+
+        <div class="meta">
+          <div class="hearts">
+            <span class="heart" id="h1">❤️</span>
+            <span class="heart" id="h2">❤️</span>
+            <span class="heart" id="h3">❤️</span>
+          </div>
+          <div class="small-muted">Pontos: <span id="score">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas" class="confetti" style="display:none"></canvas>
+
+  <script>
+    // Lista de palavras com imagem associada
+    const WORDS = [
+      {word:'gato', img: 'Imagens JG2/gato.png'},
+      {word:'casa', img: 'Imagens JG2/casa.png'},
+      {word:'bola', img: 'Imagens JG2/bola.png'},
+      {word:'sol', img: 'Imagens JG2/sol.png'},
+      {word:'peixe', img: 'Imagens JG2/peixe.png'},
+      {word:'flor', img: 'Imagens JG2/flor.png'}
+    ];
+
+    const blanksEl = document.getElementById('blanks');
+    const lettersEl = document.getElementById('letters');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const livesEls = [document.getElementById('h1'), document.getElementById('h2'), document.getElementById('h3')];
+    const roundInfo = document.getElementById('roundInfo');
+    const imgHint = document.getElementById('imgHint');
+
+    const backspaceBtn = document.getElementById('backspace');
+    const skipBtn = document.getElementById('skip');
+
+    let current = {};
+    let score = 0;
+    let lives = 3;
+    let round = 0;
+    const maxRounds = 5;
+    let placedMap = {};
+
+    function norm(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+
+    function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+    function createLetterPool(word){
+      const alpha='abcdefghijklmnopqrstuvwxyz';
+      const pool=word.split('');
+      while(pool.length<Math.max(6,word.length+2)){
+        pool.push(alpha[Math.floor(Math.random()*alpha.length)]);
+      }
+      return shuffle(pool);
+    }
+
+    function renderBlanks(len){
+      blanksEl.innerHTML='';
+      placedMap={};
+      for(let i=0;i<len;i++){
+        const b=document.createElement('div');
+        b.className='blank';
+        b.dataset.pos=i;
+        b.addEventListener('click',()=>onBlankClick(i));
+        blanksEl.appendChild(b);
+      }
+    }
+
+    function renderLetters(pool){
+      lettersEl.innerHTML='';
+      pool.forEach((ltr,idx)=>{
+        const btn=document.createElement('button');
+        btn.className='letter-btn';
+        btn.textContent=ltr.toUpperCase();
+        btn.dataset.letter=ltr;
+        btn.id=`btn-${idx}-${Date.now()}`;
+        btn.addEventListener('click',()=>onLetterClick(btn.id));
+        lettersEl.appendChild(btn);
+      });
+    }
+
+    function firstEmptyIndex(){
+      const children=blanksEl.children;
+      for(let i=0;i<children.length;i++){
+        if(!children[i].classList.contains('filled')) return i;
+      }
+      return -1;
+    }
+
+    function onLetterClick(btnId){
+      const btn=document.getElementById(btnId);
+      if(!btn||btn.disabled) return;
+      const letter=btn.dataset.letter;
+      const pos=firstEmptyIndex();
+      if(pos===-1) return;
+      placeLetterAt(pos,letter,btnId);
+      if(firstEmptyIndex()===-1){checkComplete();}
+    }
+
+    function placeLetterAt(pos,letter,btnId){
+      const blank=blanksEl.querySelector(`[data-pos="${pos}"]`);
+      blank.textContent=letter.toUpperCase();
+      blank.classList.add('filled');
+      blank.dataset.letter=letter;
+      document.getElementById(btnId).disabled=true;
+      placedMap[pos]=btnId;
+    }
+
+    function onBlankClick(pos){
+      const blank=blanksEl.querySelector(`[data-pos="${pos}"]`);
+      if(!blank.classList.contains('filled')) return;
+      const btnId=placedMap[pos];
+      blank.textContent='';
+      blank.classList.remove('filled');
+      delete blank.dataset.letter;
+      delete placedMap[pos];
+      if(btnId){document.getElementById(btnId).disabled=false;}
+    }
+
+    function backspace(){
+      const children=blanksEl.children;
+      for(let i=children.length-1;i>=0;i--){
+        if(children[i].classList.contains('filled')){onBlankClick(i);break;}
+      }
+    }
+
+    function formedWord(){
+      return Array.from(blanksEl.children).map(b=>b.dataset.letter||'').join('');
+    }
+
+    function checkComplete(){
+      if(norm(formedWord())===norm(current.word)){correct();}else{wrong();}
+    }
+
+    function updateLives(){
+      for(let i=0;i<3;i++){livesEls[i].textContent=i<lives?'❤️':'🖤';}
+      if(lives<=0) gameOver(false);
+    }
+
+    function showFeedback(t,ok){feedbackEl.textContent=t;feedbackEl.className='feedback '+(ok?'ok':'no');}
+
+    function correct(){
+      score+=10;scoreEl.textContent=score;
+      showFeedback('✨ Você acertou!',true);fireConfetti();
+      setTimeout(()=>{round<maxRounds?pickWord():gameOver(true);},1000);
+    }
+    function wrong(){lives--;updateLives();showFeedback('Ops! Tente outra vez!',false);setTimeout(()=>clearPlaced(),600);}
+    function skip(){showFeedback('Pulou!',false);setTimeout(()=>{round<maxRounds?pickWord():gameOver(true);},600);}
+
+    function clearPlaced(){
+      for(const p in placedMap){document.getElementById(placedMap[p]).disabled=false;}
+      Array.from(blanksEl.children).forEach(b=>{b.textContent='';b.classList.remove('filled');delete b.dataset.letter;});
+      placedMap={};
+    }
+
+    function gameOver(win){
+      Array.from(lettersEl.querySelectorAll('button')).forEach(b=>b.disabled=true);
+      backspaceBtn.disabled=true;skipBtn.disabled=true;
+      showFeedback(win?`Parabéns! Pontos: ${score}`:`Fim de jogo. Pontos: ${score}`,win);
+    }
+
+    function fireConfetti(){
+      const canvas=document.getElementById('confettiCanvas');
+      canvas.width=innerWidth;canvas.height=innerHeight;canvas.style.display='block';
+      const ctx=canvas.getContext('2d');const pieces=[];
+      for(let i=0;i<40;i++){pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*200,r:2+Math.random()*4,dX:(Math.random()-.5)*6,dY:2+Math.random()*4,c:['#ffe49e','#ffd7ea','#abd1c6','#bed9f4'][Math.floor(Math.random()*4)]});}
+      let ticks=0;
+      const t=setInterval(()=>{
+        ticks++;ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(const p of pieces){p.x+=p.dX;p.y+=p.dY;p.dY+=0.04;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.r*2,p.r);}
+        if(ticks>80){clearInterval(t);ctx.clearRect(0,0,canvas.width,canvas.height);canvas.style.display='none';}
+      },16);
+    }
+
+    function pickWord(){
+      round++;roundInfo.textContent=`Rodada ${round} / ${maxRounds}`;
+      current=WORDS[Math.floor(Math.random()*WORDS.length)];
+      imgHint.src=current.img;
+      renderBlanks(norm(current.word).length);
+      renderLetters(createLetterPool(norm(current.word)));
+      feedbackEl.textContent='';
+    }
+
+    (function init(){score=0;lives=3;round=0;scoreEl.textContent=score;updateLives();pickWord();})();
+    backspaceBtn.addEventListener('click',()=>backspace());
+    skipBtn.addEventListener('click',()=>skip());
+  </script>
+</body>
+</html>

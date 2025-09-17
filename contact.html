@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contato — Play Joy</title>
+  <meta name="description" content="Entre em contato com a Play Joy - estamos aqui para ajudar!" />
+  <style>
+    /* ====== Reset básico e tokens ====== */
+:root{
+  --bg:#fdfdc9;       /* fundo creme rosado */
+  --ink:#0f0e0e;      /* texto principal */
+  --muted:#0b223a;    /* texto secundário */
+  --brand:#0b223a;    /* rosa Play Joy */
+  --brand-2:#0b223a;  /* verde-água */
+  --accent:#ffe49e;   /* amarelo botão */
+  --sky:#fdfdc9;      /* azul clarinho */
+  --card:#ffffff;     /* card */
+  --chip:#fff3f9;     /* chip */
+  --shadow:0 8px 24px rgba(0,0,0,.08);
+  --radius-xl:24px;
+  --radius-lg:18px;
+  --radius-md:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.4;
+}
+a{color:var(--brand-2);text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:1120px;margin:0 auto;padding:0 20px}
+.visually-hidden{position:absolute!important;clip:rect(1px,1px,1px,1px);clip-path:inset(50%);height:1px;width:1px;overflow:hidden;white-space:nowrap}
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{left:12px;top:12px;width:auto;height:auto;background:#000;color:#000000;padding:8px 12px;border-radius:10px;z-index:999}
+
+/* ====== Header ====== */
+header{
+  position:sticky;top:0;z-index:50;
+  background: #c69fd5 ;backdrop-filter:saturate(140%) blur(6px);
+  border-bottom:1px solid #ffd7ea;
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.brand{display:flex; align-items: center; gap: 12px}
+.brand{height:48px;width:auto}
+.logo {height:80px; width:auto; margin-left: 0;} /* logo reduzida */
+.brand h1{font-size:1.25rem;margin:0;color:var(--brand)}
+.navlinks{display:flex;gap:16px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:999px;padding:12px 20px;font-weight:bold;cursor:pointer;transition:transform .08s ease, filter .2s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:#000000}
+.btn-ghost{background:transparent;color:var(--brand-2)}
+
+/* ====== Hero ====== */
+.hero{position:relative;overflow:hidden}
+.hero::before,.hero::after{content:"";position:absolute;inset:auto -10% -40% -10%;height:60%;background:radial-gradient}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;padding:48px 0}
+.eyebrow{display:inline-block;background:var(--chip);padding:8px 12px;border-radius:999px;font-size:.9rem;color:var(--brand-2)}
+.hero h2{font-size:2.4rem;line-height:1.1;margin:14px 0;color:var(--brand)}
+.hero p{font-size:1.125rem;color:var(--muted);margin:0 0 18px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-img{filter:drop-shadow(0 12px 26px rgba(0,0,0,.12));border-radius:var(--radius-xl)}
+
+/* ====== Contact Content ====== */
+.contact-section{background:var(--sky);padding:36px 0}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.contact-card{background:var(--card);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}
+.contact-card h3{margin:0 0 16px;color:var(--brand-2)}
+.contact-card p{margin:0 0 16px}
+.contact-form{background:var(--card);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:8px;font-weight:bold;color:var(--brand-2)}
+.form-group input,.form-group textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:1rem}
+.form-group textarea{resize:vertical;min-height:120px}
+.submit-btn{background:var(--accent);color:#000000;border:none;border-radius:999px;padding:12px 24px;font-weight:bold;cursor:pointer;width:100%;margin-top:16px}
+.submit-btn:hover{background:#ffd7ea}
+
+/* ====== Footer ====== */
+footer{background:#dacedf;margin-top:20px;border-top:1px solid #ffd7ea}
+.foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;padding:15px 0}
+.foot h4{margin:0 0 8px;color:var(--brand-2)}
+.foot a{display:block;margin:6px 0;color:#000000}
+.copyright{border-top:1px solid #ffd7ea;padding:14px 0;color:var(--muted);text-align:center}
+
+/* ====== Responsividade ====== */
+@media (max-width:900px){
+  .nav{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 0;
+    gap: 12px;
+  }
+  .navlinks{
+    flex-wrap: wrap;
+    gap:16px;
+    width:100%;
+    justify-content:flex-start;
+    font-size:1rem;
+  }
+  .btn{padding:12px 20px;font-size:0.95rem;}
+}
+
+@media (max-width:620px){
+  .contact-grid{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr}
+}
+
+@media (max-width:500px){
+  .hero .wrap{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr 1fr}
+
+  .nav{
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo{height:50px;} /* logo bem menor em celulares */
+  .navlinks{
+    flex-direction: column;
+    align-items: center;
+    gap:12px;
+    font-size:0.95rem;
+  }
+  .btn{width:100%;text-align:center;}
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <!-- ====== Header ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Barra de navegação">
+      <div class="brand">
+      
+       </div>
+
+      <nav class="navlinks" aria-label="Links principais">
+        
+        <span id="user-greeting" style="display:none;"></span>
+        <button class="btn btn-ghost" id="logout-btn" style="display:none;">Logout</button>
+        <button class="btn btn-primary" type="button" onclick="window.location.href='login_register.html'" id="login-register-btn">Login/Cadastro</button>
+      </nav>
+    </div>
+  </header>
+
+  <script>
+    // Check if user is logged in and display greeting
+    const userName = localStorage.getItem('userName');
+    const loginRegisterBtn = document.getElementById('login-register-btn');
+    if (userName) {
+      document.getElementById('user-greeting').textContent = `Olá, ${userName}!`;
+      document.getElementById('user-greeting').style.display = 'inline-block';
+      loginRegisterBtn.style.display = 'none'; // Hide login/cadastro button
+      document.getElementById('logout-btn').style.display = 'inline-block'; // Show logout button
+    }
+
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      localStorage.removeItem('userName'); // Clear user name from localStorage
+      document.getElementById('user-greeting').style.display = 'none'; // Hide greeting
+      loginRegisterBtn.style.display = 'inline-block'; // Show login/cadastro button
+      document.getElementById('logout-btn').style.display = 'none'; // Hide logout button
+    });
+  </script>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero" aria-labelledby="titulo-hero">
+    <div class="container wrap">
+      <div>
+        <span class="eyebrow">Fale Conosco</span>
+        <h2 id="titulo-hero">Estamos Aqui Para Ajudar</h2>
+        <p>Tem dúvidas sobre nossos jogos educacionais? Quer saber mais sobre parcerias ou suporte? Entre em contato conosco!</p>
+        <div class="hero-cta" role="group" aria-label="Ações principais">
+          <button class="btn btn-primary" onclick="scrollToContact()">Enviar Mensagem</button>
+        </div>
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Contact Content ====== -->
+  <main id="conteudo" class="contact-section container" aria-labelledby="contato">
+    <h2 id="contato">Entre em Contato</h2>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3>Email</h3>
+        <p>Para dúvidas gerais e suporte:</p>
+        <p><strong>suporte@playjoy.com.br</strong></p>
+        <p>Para parcerias e negócios:</p>
+        <p><strong>parcerias@playjoy.com.br</strong></p>
+      </div>
+
+      <div class="contact-card">
+        <h3>Telefone</h3>
+        <p>Ligue para nós:</p>
+        <p><strong>(11) 9999-9999</strong></p>
+        <p>Segunda a Sexta, 9h às 18h</p>
+      </div>
+
+     
+
+      <div class="contact-card">
+        <h3>Redes Sociais</h3>
+        <p>Siga-nos para novidades:</p>
+        <p><a href="#" target="_blank">@playjoybr</a></p>
+        <p><a href="#" target="_blank">Play Joy Brasil</a></p>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;">
+      <h2>Envie uma Mensagem</h2>
+      <div class="contact-form">
+        <form id="contactForm" onsubmit="submitContactForm(event)">
+          <div class="form-group">
+            <label for="name">Nome Completo *</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Assunto</label>
+            <input type="text" id="subject" name="subject">
+          </div>
+
+          <div class="form-group">
+            <label for="message">Mensagem *</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Enviar Mensagem</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer role="contentinfo">
+    <div class="container foot">
+      <div>
+        <h4>Play Joy</h4>
+        <p class="muted">Aprender brincando é mais divertido.</p>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <a href="play_joy.html#jogos">Sobre</a>
+        <a href="play_joy.html#destaques">Suporte</a>
+        <a href="play_joy.html#pais">Contato</a>
+      </div>
+      <div>
+        
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacidade</a>
+        <a href="terms.html">Termos</a>
+      </div>
+    </div>
+    <div class="copyright">
+      © 2025 Play Joy — Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    // Scroll to contact form
+    function scrollToContact() {
+      document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Handle contact form submission
+    function submitContactForm(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const data = Object.fromEntries(formData);
+
+      // Here you would typically send the data to your server
+      alert(`Obrigado pela mensagem, ${data.name}! Entraremos em contato em breve.`);
+
+      // Reset form
+      event.target.reset();
+    }
+  </script>
+</body>
+</html>

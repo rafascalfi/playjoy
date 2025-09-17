@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>História em Ação</title>
+  <style>
+    :root { --bg:#fdfdc9; --card:#fff; --brand:#c69fd5; --accent:#ffe49e; --muted:#333; --shadow:0 6px 18px rgba(0,0,0,0.12); --radius:20px; }
+    body { margin:0; font-family:'Comic Sans MS',sans-serif; background:var(--bg); color:var(--muted); padding:20px; text-align:center; }
+    h1 { color:var(--brand); }
+    .game-box { background:var(--card); padding:20px; border-radius:var(--radius); box-shadow:var(--shadow); display:inline-block; width:90%; max-width:1000px; }
+    .timeline { display:flex; justify-content:space-between; margin:30px 0; padding:10px; border-top:3px solid var(--brand); position:relative; }
+    .year { flex:1; text-align:center; position:relative; padding-top:40px; }
+    .year span { background:var(--accent); padding:5px 10px; border-radius:10px; position:absolute; top:-20px; left:50%; transform:translateX(-50%); font-weight:bold; }
+    .dropzone { min-height:70px; margin-top:10px; border:2px dashed #ccc; border-radius:10px; display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:5px; }
+    .event { display:inline-block; background:var(--brand); color:#fff; padding:10px 14px; border-radius:12px; margin:5px; cursor:grab; font-weight:bold; }
+    .event.correct { background:green; cursor:default; }
+    .event.wrong { background:#b00020; cursor:default; }
+    .hearts { font-size:1.5rem; margin:10px 0; }
+    .feedback { margin:15px; font-weight:bold; font-size:1.2rem; min-height:20px; }
+    .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:999; }
+    .overlay.hidden { display:none; }
+    .game-over-box, .victory-box { background:white; padding:30px; border-radius:20px; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,4); animation: pop 0.5s ease; }
+    @keyframes pop { 0% { transform:scale(0.5); opacity:0; } 100% { transform:scale(1); opacity:1; } }
+    /* botão sair fixo */
+    .exit-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+      background: #c69fd5;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+  </style>
+</head>
+<body>
+  <!-- Botão Sair que leva à página inicial -->
+  <a href="play_joy.html" class="exit-btn" aria-label="Sair para a página inicial">Sair</a>
+
+  <h1>História em Ação</h1>
+  <p>Arraste o evento histórico para o ano correto!</p>
+
+  <div class="game-box">
+    <div class="hearts" id="hearts">❤️❤️❤️</div>
+    <div id="scoreBox">Pontuação: <span id="score">0</span></div>
+
+    <div id="eventBox"></div>
+
+    <div class="timeline" id="timeline">
+      <div class="year"><span>1500</span><div class="dropzone" data-year="1500"></div></div>
+      <div class="year"><span>1822</span><div class="dropzone" data-year="1822"></div></div>
+      <div class="year"><span>1888</span><div class="dropzone" data-year="1888"></div></div>
+      <div class="year"><span>1914</span><div class="dropzone" data-year="1914"></div></div>
+      <div class="year"><span>1939</span><div class="dropzone" data-year="1939"></div></div>
+    </div>
+  </div>
+
+  <!-- telas de vitória / fim -->
+  <div id="victoryScreen" class="overlay hidden">
+    <div class="victory-box">
+      <h2>Você venceu!</h2>
+      <p id="victoryScore"></p>
+      <button onclick="restartGame()">Jogar de novo</button>
+      <button onclick="window.location.href='index.html'">Ir para a página inicial</button>
+    </div>
+  </div>
+
+  <div id="gameOverScreen" class="overlay hidden">
+    <div class="game-over-box">
+      <h2>Game Over</h2>
+      <p id="finalScore"></p>
+      <button onclick="restartGame()">Tentar novamente</button>
+      <button onclick="window.location.href='index.html'">Ir para a página inicial</button>
+    </div>
+  </div>
+
+  <script>
+    const originalEvents = [
+      {text:"Descobrimento do Brasil", year:"1500"},
+      {text:"Independência do Brasil", year:"1822"},
+      {text:"Abolição da Escravatura", year:"1888"},
+      {text:"Início da Primeira Guerra Mundial", year:"1914"},
+      {text:"Início da Segunda Guerra Mundial", year:"1939"},
+      {text:"Chegada do homem à Lua", year:"1969"},
+      {text:"Queda do Muro de Berlim", year:"1989"},
+      {text:"Atentado de 11 de Setembro", year:"2001"}
+    ];
+    let events = [...originalEvents];
+    let score=0, lives=3, currentEvent;
+
+    const eventBox=document.getElementById("eventBox");
+    const feedback=document.getElementById("feedback");
+    const scoreEl=document.getElementById("score");
+    const hearts=document.getElementById("hearts");
+
+    function newEvent(){
+      if(events.length===0){
+        document.getElementById("victoryScore").textContent = "Sua pontuação final: " + score;
+        document.getElementById("victoryScreen").classList.remove("hidden");
+        eventBox.innerHTML="";
+        return;
+      }
+      currentEvent = events[Math.floor(Math.random()*events.length)];
+      eventBox.innerHTML=`<div class="event" draggable="true" id="draggable">${currentEvent.text}</div>`;
+      const drag=document.getElementById("draggable");
+      drag.addEventListener("dragstart", e=>{e.dataTransfer.setData("text", currentEvent.text);});
+    }
+
+    document.querySelectorAll(".dropzone").forEach(zone=>{
+      zone.addEventListener("dragover", e=>e.preventDefault());
+      zone.addEventListener("drop", e=>{
+        e.preventDefault();
+        if(!currentEvent) return;
+        const year=e.currentTarget.dataset.year;
+        const correct=currentEvent.year;
+        const newCard=document.createElement("div");
+        newCard.textContent=currentEvent.text;
+
+        if(year===correct){
+          score++; scoreEl.textContent=score;
+          newCard.className="event correct";
+          events = events.filter(ev => ev.text !== currentEvent.text);
+        }else{
+          lives--; hearts.textContent="❤️".repeat(lives)+"🤍".repeat(3-lives);
+          newCard.className="event wrong";
+        }
+        e.currentTarget.appendChild(newCard);
+
+        if(lives<=0){
+          document.getElementById("finalScore").textContent = "Sua pontuação final: " + score;
+          document.getElementById("gameOverScreen").classList.remove("hidden");
+          eventBox.innerHTML="";
+          return;
+        }
+        setTimeout(newEvent,1500);
+      });
+    });
+
+    function restartGame(){
+      score=0; lives=3;
+      scoreEl.textContent=score;
+      hearts.textContent="❤️❤️❤️";
+      events=[...originalEvents];
+      document.querySelectorAll(".dropzone").forEach(zone => zone.innerHTML = "");
+      document.getElementById("gameOverScreen").classList.add("hidden");
+      document.getElementById("victoryScreen").classList.add("hidden");
+      newEvent();
+    }
+
+    newEvent();
+  </script>
+</body>
+</html>
+

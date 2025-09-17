@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login — Play Joy</title>
+  <meta name="description" content="Faça login para acessar os jogos educacionais da Play Joy." />
+  <!-- Font Awesome CDN for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-papb+X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q6X+6Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    /* ====== Reset básico e tokens ====== */
+    :root{
+      --bg:#fdfdc9;       /* fundo creme rosado */
+      --ink:#0f0e0e;      /* texto principal */
+      --muted:#0b223a;    /* texto secundário */
+      --brand:#0b223a;    /* rosa Play Joy */
+      --brand-2:#0b223a;  /* verde-água */
+      --accent:#ffe49e;   /* amarelo botão */
+      --sky:#ffffe9;      /* azul clarinho */
+      --card:#ffffff;     /* card */
+      --chip:#fff3f9;     /* chip */
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius-xl:24px;
+      --radius-lg:18px;
+      --radius-md:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.4;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    a{color:var(--brand-2);text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{max-width:1120px;margin:0 auto;padding:0 20px}
+    .form-container{
+      background:var(--card);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow);
+      padding:24px;
+      width:100%;
+      max-width:400px;
+    }
+    .form-container h2{text-align:center;margin-bottom:20px;color:var(--brand)}
+    .form-group{margin-bottom:16px; position: relative;}
+    .form-group label{display:block;margin-bottom:4px;font-weight:bold}
+    .form-group input{
+      width:100%;
+      padding:12px 40px 12px 12px;
+      border:1px solid #ccc;
+      border-radius:var(--radius-md);
+      font-size:1rem;
+    }
+    .form-group input:focus{
+      border-color:var(--brand);
+      outline:none;
+    }
+    .form-group .fa-icon{
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--brand);
+      pointer-events: none;
+      font-size: 1.2rem;
+    }
+    .password-container{
+      position:relative;
+    }
+    .password-container input{
+      padding-right:40px;
+    }
+    .toggle-password{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      cursor:pointer;
+      background:none;
+      border:none;
+      font-size:0.9rem;
+      color:var(--brand);
+    }
+    .password-strength{
+      height:5px;
+      background:#ddd;
+      border-radius:var(--radius-md);
+      margin-top:8px;
+      overflow:hidden;
+    }
+    .password-strength-bar{
+      height:100%;
+      width:0;
+      transition:width 0.3s;
+    }
+    .strength-weak{background:#ff4d4d;width:33%}
+    .strength-medium{background:#ffcc00;width:66%}
+    .strength-strong{background:#4caf50;width:100%}
+    .social-login{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin:20px 0;
+    }
+    .social-btn{
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius:var(--radius-md);
+      cursor:pointer;
+      font-weight:bold;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    .google-btn{background:#dd4b39;color:white}
+    .facebook-btn{background:#3b5998;color:white}
+    .form-footer{text-align:center;margin-top:20px}
+    .form-footer a{color:var(--brand);font-weight:bold}
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--brand);
+      user-select: none;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    .form-container {
+      transition: opacity 0.3s ease;
+    }
+    .form-container.fade-out {
+      opacity: 0;
+    }
+    .form-container.fade-in {
+      opacity: 1;
+    }
+    .loading-spinner {
+      display: none;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--brand);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+      color: #ff4d4d;
+      font-size: 0.9rem;
+      margin-top: 4px;
+      display: none;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .checkbox-group input {
+      margin-right: 8px;
+    }
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 16px;
+    }
+    .forgot-password a {
+      font-size: 0.9rem;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: var(--card);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      max-width: 400px;
+      width: 90%;
+    }
+    .close {
+      color: var(--brand);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Play Joy</div>
+    <div class="form-container">
+      <h2>Login</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" required />
+          <i class="fa fa-envelope fa-icon"></i>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Senha</label>
+          <div class="password-container">
+            <input type="password" id="login-password" required />
+            <button type="button" class="toggle-password" id="toggle-login-password">Mostrar</button>
+            <i class="fa fa-lock fa-icon"></i>
+          </div>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="remember-me" />
+          <label for="remember-me">Lembrar-me</label>
+        </div>
+        <div class="forgot-password">
+          <a href="#" id="forgot-password-link">Esqueceu a senha?</a>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; background: var(--accent); position: relative;">
+          <span id="login-btn-text">Entrar</span>
+          <div class="loading-spinner" id="login-spinner"></div>
+        </button>
+      </form>
+      <div class="social-login">
+        <button class="social-btn google-btn">
+          <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
+          Google
+        </button>
+        <button class="social-btn facebook-btn">
+          <img src="https://img.icons8.com/color/16/000000/facebook-new.png" alt="Facebook" />
+          Facebook
+        </button>
+      </div>
+      <div class="form-footer">
+        <p>Não tem uma conta? <a href="#" id="show-register">Registre-se</a></p>
+      </div>
+    </div>
+
+    <div class="form-container" id="register-container" style="display:none">
+      <h2>Registrar</h2>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="register-name">Nome</label>
+          <input type="text" id="register-name" required />
+          <i class="fa fa-user fa-icon"></i>
+        </div>
+        <div class="form-group">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" required />
+          <i class="fa fa-envelope fa-icon"></i>
+        </div>
+        <div class="form-group">
+          <label for="register-password">Senha</label>
+          <div class="password-container">
+            <input type="password" id="register-password" required />
+            <button type="button" class="toggle-password" id="toggle-register-password">Mostrar</button>
+            <i class="fa fa-lock fa-icon"></i>
+          </div>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="password-strength-bar"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="register-confirm-password">Confirmar Senha</label>
+          <div class="password-container">
+            <input type="password" id="register-confirm-password" required />
+            <i class="fa fa-lock fa-icon"></i>
+          </div>
+          <div class="error-message" id="confirm-password-error">As senhas não coincidem.</div>
+        </div>
+        <div class="form-group">
+          <label for="register-phone">Telefone</label>
+          <input type="tel" id="register-phone" required />
+          <i class="fa fa-phone fa-icon"></i>
+        </div>
+        <div class="form-group">
+          <label for="register-dob">Data de Nascimento</label>
+          <input type="date" id="register-dob" required />
+          <i class="fa fa-calendar fa-icon"></i>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; background: var(--accent); position: relative;">
+          <span id="register-btn-text">Registrar</span>
+          <div class="loading-spinner" id="register-spinner"></div>
+        </button>
+      </form>
+      <div class="form-footer">
+        <p>Já tem uma conta? <a href="#" id="show-login">Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot-password-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <h2>Esqueceu a Senha?</h2>
+      <p>Insira seu email para receber instruções de redefinição de senha.</p>
+      <form id="forgot-password-form">
+        <div class="form-group">
+          <label for="forgot-email">Email</label>
+          <input type="email" id="forgot-email" required />
+          <i class="fa fa-envelope fa-icon"></i>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; background: var(--accent);">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Utility functions
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.style.display = 'none';
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    function showSpinner(buttonId, spinnerId, textId) {
+      document.getElementById(buttonId).disabled = true;
+      document.getElementById(textId).style.display = 'none';
+      document.getElementById(spinnerId).style.display = 'block';
+    }
+
+    function hideSpinner(buttonId, spinnerId, textId) {
+      document.getElementById(buttonId).disabled = false;
+      document.getElementById(textId).style.display = 'inline';
+      document.getElementById(spinnerId).style.display = 'none';
+    }
+
+    // Toggle password visibility
+    document.getElementById('toggle-login-password').addEventListener('click', function() {
+      const passwordInput = document.getElementById('login-password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.textContent = type === 'password' ? 'Mostrar' : 'Ocultar';
+    });
+
+    document.getElementById('toggle-register-password').addEventListener('click', function() {
+      const passwordInput = document.getElementById('register-password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.textContent = type === 'password' ? 'Mostrar' : 'Ocultar';
+    });
+
+    // Password strength indicator
+    document.getElementById('register-password').addEventListener('input', function() {
+      const password = this.value;
+      const strengthBar = document.getElementById('password-strength-bar');
+      let strength = 0;
+
+      if (password.length > 0) strength += 1;
+      if (password.length > 5) strength += 1;
+      if (/[A-Z]/.test(password)) strength += 1;
+      if (/[0-9]/.test(password)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+      strengthBar.className = 'password-strength-bar';
+      if (strength < 3) {
+        strengthBar.classList.add('strength-weak');
+      } else if (strength < 5) {
+        strengthBar.classList.add('strength-medium');
+      } else {
+        strengthBar.classList.add('strength-strong');
+      }
+    });
+
+    // Confirm password validation
+    document.getElementById('register-confirm-password').addEventListener('input', function() {
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = this.value;
+      if (password !== confirmPassword) {
+        showError('confirm-password-error', 'As senhas não coincidem.');
+      } else {
+        hideError('confirm-password-error');
+      }
+    });
+
+    // Toggle between login and register forms with animation
+    document.getElementById('show-register').addEventListener('click', function(e) {
+      e.preventDefault();
+      const loginContainer = document.getElementById('login-form').closest('.form-container');
+      const registerContainer = document.getElementById('register-container');
+      loginContainer.classList.add('fade-out');
+      setTimeout(() => {
+        loginContainer.style.display = 'none';
+        registerContainer.style.display = 'block';
+        registerContainer.classList.add('fade-in');
+      }, 300);
+    });
+
+    document.getElementById('show-login').addEventListener('click', function(e) {
+      e.preventDefault();
+      const registerContainer = document.getElementById('register-container');
+      const loginContainer = document.getElementById('login-form').closest('.form-container');
+      registerContainer.classList.add('fade-out');
+      setTimeout(() => {
+        registerContainer.style.display = 'none';
+        loginContainer.style.display = 'block';
+        loginContainer.classList.add('fade-in');
+      }, 300);
+    });
+
+    // Forgot password modal
+    document.getElementById('forgot-password-link').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('forgot-password-modal').style.display = 'flex';
+    });
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+      document.getElementById('forgot-password-modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+      const modal = document.getElementById('forgot-password-modal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Forgot password form submission
+    document.getElementById('forgot-password-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value;
+      if (!validateEmail(email)) {
+        alert('Por favor, insira um email válido.');
+        return;
+      }
+      alert('Instruções de redefinição de senha enviadas para ' + email);
+      document.getElementById('forgot-password-modal').style.display = 'none';
+    });
+
+    // Login form submission with validation
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const rememberMe = document.getElementById('remember-me').checked;
+
+      if (!validateEmail(email)) {
+        alert('Por favor, insira um email válido.');
+        return;
+      }
+      if (password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+
+      showSpinner('login-form', 'login-spinner', 'login-btn-text');
+      setTimeout(() => {
+        hideSpinner('login-form', 'login-spinner', 'login-btn-text');
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+        }
+        alert('Login realizado com sucesso! Redirecionando para a página principal...');
+        window.location.href = 'play_joy.html';
+      }, 2000); // Simulate loading
+    });
+
+    // Register form submission with validation
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      const phone = document.getElementById('register-phone').value;
+      const dob = document.getElementById('register-dob').value;
+
+      if (name.length < 2) {
+        alert('Nome deve ter pelo menos 2 caracteres.');
+        return;
+      }
+      if (!validateEmail(email)) {
+        alert('Por favor, insira um email válido.');
+        return;
+      }
+      if (password.length < 6) {
+        alert('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert('As senhas não coincidem.');
+        return;
+      }
+      if (phone.length < 10) {
+        alert('Telefone deve ter pelo menos 10 dígitos.');
+        return;
+      }
+      if (!dob) {
+        alert('Por favor, selecione a data de nascimento.');
+        return;
+      }
+
+      showSpinner('register-form', 'register-spinner', 'register-btn-text');
+      setTimeout(() => {
+        hideSpinner('register-form', 'register-spinner', 'register-btn-text');
+        localStorage.setItem('userName', name);
+        alert('Registro realizado com sucesso! Verifique seu email para confirmação.');
+        window.location.href = 'play_joy.html';
+      }, 2000); // Simulate loading
+    });
+
+    // Social login buttons
+    document.querySelector('.google-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Login com Google realizado com sucesso! Redirecionando...');
+      localStorage.setItem('userName', 'Usuário Google');
+      window.location.href = 'play_joy.html';
+    });
+
+    document.querySelector('.facebook-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Login com Facebook realizado com sucesso! Redirecionando...');
+      localStorage.setItem('userName', 'Usuário Facebook');
+      window.location.href = 'play_joy.html';
+    });
+
+    // Load remembered email
+    window.addEventListener('load', function() {
+      const rememberedEmail = localStorage.getItem('rememberedEmail');
+      if (rememberedEmail) {
+        document.getElementById('login-email').value = rememberedEmail;
+        document.getElementById('remember-me').checked = true;
+      }
+    });
+  </script>
+</body>
+</html>
